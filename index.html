@@ -11,21 +11,24 @@
             position: absolute;
             bottom: 20px;
             left: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             padding: 10px;
             border-radius: 8px;
             font-family: Arial, sans-serif;
             z-index: 10;
+            display: flex;
+            gap: 10px;
         }
         .shape-button {
             color: white;
             background: #007bff;
             border: none;
             padding: 10px 15px;
-            margin: 5px;
             cursor: pointer;
             border-radius: 5px;
             transition: background 0.3s;
+            font-weight: bold;
+            white-space: nowrap;
         }
         .shape-button:hover {
             background: #0056b3;
@@ -37,16 +40,20 @@
 </head>
 <body>
     <div id="menu">
-        <button class="shape-button active" data-shape="cube">📦 Cube</button>
+        <button class="shape-button" data-shape="cube">📦 Cube</button>
         <button class="shape-button" data-shape="sphere">🌐 Ball</button>
         <button class="shape-button" data-shape="tetrahedron">🔺 Triangle</button>
+        <button class="shape-button" data-shape="tesseract">⌘ Tesseract (4D)</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <script>
-        let scene, camera, renderer, controls, currentShape, light;
+        let scene, camera, renderer, controls, currentShape, currentShapeType, light;
+        let tesseract = { points: [], edges: [], object: null, rotation: 0 };
+        
+        const SHAPE_SIZE = 2;
 
         function init() {
             scene = new THREE.Scene();
@@ -59,20 +66,22 @@
             light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(5, 5, 5).normalize();
             scene.add(light);
-            scene.add(new THREE.AmbientLight(0x404040, 2));
+            scene.add(new THREE.AmbientLight(0x404040, 2)); 
 
             camera.position.z = 5;
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
+            controls.enableDamping = true; 
             controls.dampingFactor = 0.05;
             controls.screenSpacePanning = false;
-            controls.minDistance = 2;
-            controls.maxDistance = 10;
+            controls.minDistance = 2; 
+            controls.maxDistance = 15; 
 
             changeShape('cube');
 
             window.addEventListener('resize', onWindowResize, false);
+            
+            initTesseract();
         }
 
         function onWindowResize() {
@@ -81,35 +90,122 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        function createShape(type) {
+        function create3DShape(type) {
             let geometry;
-            const material = new THREE.MeshPhongMaterial({ color: 0x0077ff, shininess: 80 });
+            const material = new THREE.MeshPhongMaterial({ color: 0x0077ff, shininess: 80, side: THREE.DoubleSide });
 
             switch (type) {
                 case 'cube':
-                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    geometry = new THREE.BoxGeometry(SHAPE_SIZE, SHAPE_SIZE, SHAPE_SIZE);
                     break;
                 case 'sphere':
-                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                    geometry = new THREE.SphereGeometry(SHAPE_SIZE * 0.75, 32, 32);
                     break;
                 case 'tetrahedron':
-                    geometry = new THREE.TetrahedronGeometry(2);
+                    geometry = new THREE.TetrahedronGeometry(SHAPE_SIZE);
                     break;
                 default:
                     return null;
             }
             return new THREE.Mesh(geometry, material);
         }
+        
+        function initTesseract() {
+            const S = SHAPE_SIZE * 0.5;
+            for (let i = 0; i < 16; i++) {
+                const x = (i & 1) ? S : -S;
+                const y = (i & 2) ? S : -S;
+                const z = (i & 4) ? S : -S;
+                const w = (i & 8) ? S : -S;
+                tesseract.points.push([x, y, z, w]);
+            }
 
+            for (let i = 0; i < 16; i++) {
+                for (let j = i + 1; j < 16; j++) {
+                    let diff = 0;
+                    if (tesseract.points[i][0] !== tesseract.points[j][0]) diff++;
+                    if (tesseract.points[i][1] !== tesseract.points[j][1]) diff++;
+                    if (tesseract.points[i][2] !== tesseract.points[j][2]) diff++;
+                    if (tesseract.points[i][3] !== tesseract.points[j][3]) diff++;
+                    
+                    if (diff === 1) {
+                        tesseract.edges.push([i, j]);
+                    }
+                }
+            }
+        }
+        
+        function rotate4D(point, angle) {
+            const [x, y, z, w] = point;
+            const new_x = x * Math.cos(angle) - w * Math.sin(angle);
+            const new_w = x * Math.sin(angle) + w * Math.cos(angle);
+            return [new_x, y, z, new_w];
+        }
+
+        function updateTesseract() {
+            if (tesseract.object) {
+                scene.remove(tesseract.object);
+            }
+            
+            const projectedPoints = [];
+            const projectionDistance = 1.5;
+
+            tesseract.points.forEach(p4 => {
+                const p4Rotated = rotate4D(p4, tesseract.rotation); 
+                
+                const [x, y, z, w] = p4Rotated;
+                const divisor = (projectionDistance - w);
+
+                projectedPoints.push(new THREE.Vector3(
+                    x / divisor,
+                    y / divisor,
+                    z / divisor
+                ));
+            });
+
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+
+            tesseract.edges.forEach(edge => {
+                positions.push(projectedPoints[edge[0]].x, projectedPoints[edge[0]].y, projectedPoints[edge[0]].z);
+                positions.push(projectedPoints[edge[1]].x, projectedPoints[edge[1]].y, projectedPoints[edge[1]].z);
+            });
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+            const material = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 2 });
+            tesseract.object = new THREE.LineSegments(geometry, material);
+            tesseract.object.scale.set(SHAPE_SIZE * 0.7, SHAPE_SIZE * 0.7, SHAPE_SIZE * 0.7);
+            scene.add(tesseract.object);
+            
+            tesseract.rotation += 0.005;
+        }
+        
         function changeShape(type) {
             if (currentShape) {
                 scene.remove(currentShape);
+                currentShape = null;
             }
+            if (tesseract.object) {
+                scene.remove(tesseract.object);
+                tesseract.object = null;
+            }
+            
+            currentShapeType = type;
+            controls.enabled = true;
 
-            currentShape = createShape(type);
-            if (currentShape) {
-                scene.add(currentShape);
+            if (type === 'tesseract') {
+                controls.enabled = false;
+                camera.position.z = 8;
+            } else {
+                currentShape = create3DShape(type);
+                if (currentShape) {
+                    scene.add(currentShape); 
+                }
+                camera.position.z = 5;
             }
+            
+            camera.updateProjectionMatrix();
 
             document.querySelectorAll('.shape-button').forEach(button => {
                 button.classList.remove('active');
@@ -122,13 +218,15 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            controls.update();
-            
-            if (currentShape) {
+            if (currentShapeType === 'tesseract') {
+                updateTesseract();
+            } else if (currentShape) {
                  currentShape.rotation.x += 0.005;
                  currentShape.rotation.y += 0.005;
+                 controls.update();
+            } else {
+                controls.update();
             }
-
 
             renderer.render(scene, camera);
         }
@@ -143,6 +241,7 @@
             });
             
             init();
+            changeShape('cube')
             animate();
         });
 
