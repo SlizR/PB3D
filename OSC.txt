@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PB3D</title>
+    <link rel="icon" type="image/png" href="Assets/icon.png">
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="keywords" content="PB3D, 3D, 4D, graphic, sliz, code, PB, project">
+<meta name="author" content="Sliz®">
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="UnFi - Universal Fast Bootloader">
+<meta property="og:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slizr.github.io/PB3D/">
+<meta property="og:image" content="Assets/favicon.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="UnFi - Universal Fast Bootloader">
+<meta name="twitter:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="twitter:image" content="Assets/favicon.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="Assets/favicon.png">
+<link rel="apple-touch-startup-image" href="Assets/favicon.png">
+
+<meta name="msapplication-TileColor" content="#1a1a1a">
+<meta name="msapplication-TileImage" content="Assets/favicon.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="Assets/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="Assets/favicon.png">
+
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        canvas { display: block; }
+        #menu {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            z-index: 10;
+        }
+        .shape-button {
+            color: white;
+            background: #007bff;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .shape-button:hover {
+            background: #0056b3;
+        }
+        .shape-button.active {
+            background: #28a745;
+        }
+
+#controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+    color: white;
+    font-size: 14px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 25px;
+    margin-left: 10px;
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 19px;
+    width: 19px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(19px);
+}
+
+.slider.round {
+    border-radius: 25px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+#main-footer a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    margin: 0 5px;
+    transition: color 0.3s;
+}
+
+#main-footer a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+#footer-links {
+    display: inline-block;
+    margin-left: 10px;
+}
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <button class="shape-button active" data-shape="cube">◼︎ Cube</button>
+        <button class="shape-button" data-shape="sphere">⏺︎ Ball</button>
+        <button class="shape-button" data-shape="tetrahedron">▲ Triangle</button>
+        <button class="shape-button" data-shape="tesseract">♾︎ Hypercube (4D)</button>
+
+        <hr style="margin: 10px 0; border-color: rgba(255, 255, 255, 0.3);">
+    
+    <div id="controls">
+        <label class="switch-label" for="rotation-toggle">
+            Auto-Rotation
+        </label>
+        <label class="switch">
+            <input type="checkbox" id="rotation-toggle" checked>
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+
+    <footer id="main-footer">
+    © 2025 Sliz®. All Rights Reserved. Version 24.0
+    
+        <div id="footer-links">
+        | <a href="https://github.com/SlizR/PB3D" target="_blank">GitHub</a>
+        | <a href="https://github.com/SlizR/PB3D/blob/main/LICENSE" target="_blank">License</a>
+    </div>
+</footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls, currentShape, light;
+        let isRotating = true;
+        let tesseractData = {
+            rotationTime: 0,
+            vertices4D: [],
+            edges: [],
+            size: 2,
+            projectionScale: 1.5
+        };
+        const ambientLightIntensity = 2;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 5, 5).normalize();
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040, ambientLightIntensity));
+
+            camera.position.z = 5;
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 15;
+
+            initTesseract();
+
+            changeShape('cube');
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+
+        function createShape(type) {
+            let geometry;
+            const material = new THREE.MeshPhongMaterial({ color: 0x0077ff, shininess: 80 });
+
+            switch (type) {
+                case 'cube':
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    return new THREE.Mesh(geometry, material);
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                    return new THREE.Mesh(geometry, material);
+                case 'tetrahedron':
+                    geometry = new THREE.TetrahedronGeometry(2);
+                    return new THREE.Mesh(geometry, material);
+                case 'tesseract':
+                    return createTesseract();
+                default:
+                    return null;
+            }
+        }
+
+
+        function initTesseract() {
+            const s = tesseractData.size / 2;
+            tesseractData.vertices4D = [];
+            for (let i = 0; i < 16; i++) {
+                tesseractData.vertices4D.push([
+                    (i & 1) ? s : -s,
+                    (i & 2) ? s : -s,
+                    (i & 4) ? s : -s,
+                    (i & 8) ? s : -s
+                ]);
+            }
+
+            tesseractData.edges = [];
+            for (let i = 0; i < 16; i++) {
+                for (let j = i + 1; j < 16; j++) {
+                    let diffCount = 0;
+                    for (let k = 0; k < 4; k++) {
+                        if (tesseractData.vertices4D[i][k] !== tesseractData.vertices4D[j][k]) {
+                            diffCount++;
+                        }
+                    }
+                    if (diffCount === 1) {
+                        tesseractData.edges.push([i, j]);
+                    }
+                }
+            }
+        }
+
+        function rotate4D(v, angle) {
+            const rotXW = [
+                [Math.cos(angle), 0, 0, -Math.sin(angle)],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [Math.sin(angle), 0, 0, Math.cos(angle)]
+            ];
+            const rotZW = [
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, Math.cos(angle), -Math.sin(angle)],
+                [0, 0, Math.sin(angle), Math.cos(angle)]
+            ];
+
+            let v_prime = [0, 0, 0, 0];
+            let temp_v = [...v];
+
+            v_prime[0] = rotXW[0][0] * temp_v[0] + rotXW[0][3] * temp_v[3];
+            v_prime[1] = temp_v[1];
+            v_prime[2] = temp_v[2];
+            v_prime[3] = rotXW[3][0] * temp_v[0] + rotXW[3][3] * temp_v[3];
+            temp_v = [...v_prime];
+
+            v_prime[0] = temp_v[0];
+            v_prime[1] = temp_v[1];
+            v_prime[2] = rotZW[2][2] * temp_v[2] + rotZW[2][3] * temp_v[3];
+            v_prime[3] = rotZW[3][2] * temp_v[2] + rotZW[3][3] * temp_v[3];
+
+            return v_prime;
+        }
+
+        function project4DTo3D(v4) {
+            const d = 2;
+            const w = v4[3];
+            const scale = d / (d - w);
+
+            return new THREE.Vector3(
+                v4[0] * scale * tesseractData.projectionScale,
+                v4[1] * scale * tesseractData.projectionScale,
+                v4[2] * scale * tesseractData.projectionScale
+            );
+        }
+
+        function createTesseract() {
+            const group = new THREE.Group();
+            
+            const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(tesseractData.edges.length * 2 * 3);
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const line = new THREE.LineSegments(geometry, material);
+            group.add(line);
+
+            group.userData.lineMesh = line;
+            group.userData.isTesseract = true;
+
+            return group;
+        }
+
+        function updateTesseract(deltaTime) {
+            const speed = 0.5; // Скорость вращения в 4D
+            tesseractData.rotationTime += speed * deltaTime;
+            const angle = tesseractData.rotationTime;
+
+            const lineMesh = currentShape.userData.lineMesh;
+            const positions = lineMesh.geometry.attributes.position.array;
+            let positionsIndex = 0;
+
+            tesseractData.edges.forEach(edge => {
+                const startVertex4D = tesseractData.vertices4D[edge[0]];
+                const endVertex4D = tesseractData.vertices4D[edge[1]];
+
+                const rotatedStart = rotate4D(startVertex4D, angle);
+                const rotatedEnd = rotate4D(endVertex4D, angle);
+
+                const start3D = project4DTo3D(rotatedStart);
+                const end3D = project4DTo3D(rotatedEnd);
+                
+                positions[positionsIndex++] = start3D.x;
+                positions[positionsIndex++] = start3D.y;
+                positions[positionsIndex++] = start3D.z;
+
+                positions[positionsIndex++] = end3D.x;
+                positions[positionsIndex++] = end3D.y;
+                positions[positionsIndex++] = end3D.z;
+            });
+
+            lineMesh.geometry.attributes.position.needsUpdate = true;
+        }
+
+
+
+        function changeShape(type) {
+            if (currentShape) {
+                scene.remove(currentShape);
+            }
+
+            currentShape = createShape(type);
+            if (currentShape) {
+                scene.add(currentShape);
+            }
+
+            if (type === 'tesseract') {
+                camera.position.z = 8; 
+                controls.update();
+            } else {
+                camera.position.z = 5;
+                controls.update();
+            }
+
+            document.querySelectorAll('.shape-button').forEach(button => {
+                button.classList.remove('active');
+                if (button.dataset.shape === type) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        let lastTime = 0;
+
+        function animate(time) {
+    requestAnimationFrame(animate);
+
+    const deltaTime = (time - lastTime) / 1000;
+    lastTime = time;
+
+    controls.update();
+
+    if (isRotating && currentShape) { 
+        if (currentShape.userData.isTesseract) {
+            updateTesseract(deltaTime);
+            currentShape.rotation.x += 0.005; 
+            currentShape.rotation.y += 0.005;
+        } else {
+            currentShape.rotation.x += 0.005;
+            currentShape.rotation.y += 0.005;
+        }
+    }
+
+    renderer.render(scene, camera);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const menu = document.getElementById('menu');
+
+    menu.addEventListener('click', (event) => {
+        if (event.target.classList.contains('shape-button')) {
+            const shapeType = event.target.dataset.shape;
+            changeShape(shapeType);
+        }
+    });
+    
+    const rotationToggle = document.getElementById('rotation-toggle');
+    rotationToggle.addEventListener('change', (event) => {
+        isRotating = event.target.checked;
+    });
+
+    init();
+    animate(0);
+});
+
+    </script>
+</body>
+</html>
