@@ -1,6 +1,6 @@
 # PB3D: Project Beyond 3-Dimensional 🌌
 
-![PB3D photo](https://github.com/SlizR/PB3D/blob/main/Assets/photo.png)
+![PB3D Gif](https://github.com/SlizR/PB3D/blob/main/Assets/photo.gif)
 
 ---
 
