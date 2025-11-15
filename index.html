@@ -4,6 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PB3D</title>
+    <link rel="icon" type="image/png" href="Assets/icon.png">
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="keywords" content="PB3D, 3D, 4D, graphic, sliz, code, PB, project">
+<meta name="author" content="Sliz®">
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="UnFi - Universal Fast Bootloader">
+<meta property="og:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slizr.github.io/PB3D/">
+<meta property="og:image" content="Assets/favicon.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="UnFi - Universal Fast Bootloader">
+<meta name="twitter:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="twitter:image" content="Assets/favicon.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="Assets/favicon.png">
+<link rel="apple-touch-startup-image" href="Assets/favicon.png">
+
+<meta name="msapplication-TileColor" content="#1a1a1a">
+<meta name="msapplication-TileImage" content="Assets/favicon.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="Assets/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="Assets/favicon.png">
+
     <style>
         body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
         canvas { display: block; }
@@ -99,17 +130,21 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-#main-footer {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    padding: 8px 15px;
-    background: rgba(0, 0, 0, 0.5);
-    color: rgba(255, 255, 255, 0.7);
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    border-top-left-radius: 8px;
-    z-index: 10;
+#main-footer a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    margin: 0 5px;
+    transition: color 0.3s;
+}
+
+#main-footer a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+#footer-links {
+    display: inline-block;
+    margin-left: 10px;
 }
     </style>
 </head>
@@ -134,8 +169,13 @@ input:checked + .slider:before {
 </div>
 
     <footer id="main-footer">
-    © 2025 Sliz®. All Rights Reserved. Version 23.0
-    </footer>
+    © 2025 Sliz®. All Rights Reserved. Version 24.0
+    
+        <div id="footer-links">
+        | <a href="https://github.com/SlizR/PB3D" target="_blank">GitHub</a>
+        | <a href="https://github.com/SlizR/PB3D/blob/main/LICENSE" target="_blank">License</a>
+    </div>
+</footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
