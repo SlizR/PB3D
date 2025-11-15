@@ -86,4 +86,4 @@ This project is licensed under the **Apache License 2.0**. See the `LICENSE` fil
 * **Web-page:** [PB3D](https://slizr.github.io/PB3D/)
 * **Email:** markd.voznyuk@gmail.com
 
-*© 2025 Sliz®. All Rights Reserved. Version 23.0*
+*© 2025 Sliz®. All Rights Reserved. Version 24.0*
