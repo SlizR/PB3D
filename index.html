@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PB3D</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        canvas { display: block; }
+        #menu {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            z-index: 10;
+        }
+        .shape-button {
+            color: white;
+            background: #007bff;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .shape-button:hover {
+            background: #0056b3;
+        }
+        .shape-button.active {
+            background: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <button class="shape-button active" data-shape="cube">📦 Cube</button>
+        <button class="shape-button" data-shape="sphere">🌐 Ball</button>
+        <button class="shape-button" data-shape="tetrahedron">🔺 Triangle</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls, currentShape, light;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 5, 5).normalize();
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040, 2));
+
+            camera.position.z = 5;
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 10;
+
+            changeShape('cube');
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function createShape(type) {
+            let geometry;
+            const material = new THREE.MeshPhongMaterial({ color: 0x0077ff, shininess: 80 });
+
+            switch (type) {
+                case 'cube':
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    break;
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                    break;
+                case 'tetrahedron':
+                    geometry = new THREE.TetrahedronGeometry(2);
+                    break;
+                default:
+                    return null;
+            }
+            return new THREE.Mesh(geometry, material);
+        }
+
+        function changeShape(type) {
+            if (currentShape) {
+                scene.remove(currentShape);
+            }
+
+            currentShape = createShape(type);
+            if (currentShape) {
+                scene.add(currentShape);
+            }
+
+            document.querySelectorAll('.shape-button').forEach(button => {
+                button.classList.remove('active');
+                if (button.dataset.shape === type) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            controls.update();
+            
+            if (currentShape) {
+                 currentShape.rotation.x += 0.005;
+                 currentShape.rotation.y += 0.005;
+            }
+
+
+            renderer.render(scene, camera);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const menu = document.getElementById('menu');
+            menu.addEventListener('click', (event) => {
+                if (event.target.classList.contains('shape-button')) {
+                    const shapeType = event.target.dataset.shape;
+                    changeShape(shapeType);
+                }
+            });
+            
+            init();
+            animate();
+        });
+
+    </script>
+</body>
+</html>
