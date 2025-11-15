@@ -27,6 +27,12 @@ Users can switch between various standard 3D shapes (Cube, Sphere, Tetrahedron) 
 
 ---
 
+## 🌌 Open Source Code
+
+* The **open source code** is provided in a file [**here**](OSC.txt), and **you can copy** it **without the footer** and **author's badge**, **but with one author's comment**.
+
+---
+
 ## 🛠️ Technology Stack
 
 * **HTML5**
