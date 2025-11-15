@@ -1,6 +1,16 @@
-# PB3D: Project B-Dimensional 🌌
+# PB3D: Project Beyond 3-Dimensional 🌌
 
+![PB3D photo](https://github.com/SlizR/PB3D/blob/main/Assets/photo.png)
 
+---
+
+  <p align="center">
+  <img src="https://img.shields.io/badge/Created by-Sliz®-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-Apache License 2.0-lightgrey?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Project%20Beyond%20-3 Dimensional-purple?style=for-the-badge" />
+</p>
+  
+---
 
 PB3D (Project B-Dimensional) is a minimalistic and interactive web project built using **Three.js** to demonstrate and explore 3D geometry and the 4D hypercube (Tesseract) in real time.
 
@@ -65,7 +75,7 @@ The main control panel is located in the bottom-left corner of the screen:
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See the `LICENSE` file for more details.
+This project is licensed under the **Apache License 2.0**. See the `LICENSE` file for more details.
 
 ---
 
