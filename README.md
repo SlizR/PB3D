@@ -34,6 +34,23 @@ You can view each publicly available version of the project and select any for y
 
 To see the history of each version, go to the Versions section of the repository, select the version, go to info.txt, and read the changes, or take the indeh.html code for that version and look at it.
 * **Versions Dir: [Directory](Versions)**
+* OR
+* You can open the [**web-page**](https://slizr.github.io/PB3D) and add the link **/Versions/(Your Version)/** to **view the project** **without** even **downloading it from your phone or PC**. The selected **version** is **below** (First>Last):
+
+1. 1.start
+2. 1.0
+3. 20.0
+4. 21.0
+5. 22.0
+6. 23.0
+7. 24.0
+8. 25.0
+
+**Example with version 1.start**: https://slizr.github.io/PB3D/Versions/1.start/
+
+## Explanation of **why version 1.0** jumps **straight to 20.0**:
+
+The project was not created specifically, but by chance when experimenting with 3D models in the browser, and one of the developers came up with the idea to make this project for teachers and children, and development began, and the first 2 versions, namely 1.start (Basic) and 1.0 (Simple Cube Viewer) were released for the main project, a large-scale change with 1 edit from each developer (there are 20 of them in total). So they decided to call the new version 20.0 and not 1.1 or something else.
 
 ---
 
