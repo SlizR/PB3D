@@ -49,13 +49,13 @@ The PB3D project is simple to set up. Since it primarily uses local files (HTML,
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/SlizR/PB3D.git](https://github.com/SlizR/PB3D.git)
+    git clone https://github.com/SlizR/PB3D.git
     ```
 2.  **Navigate to the project directory:**
     ```bash
     cd PB3D
     ```
-3.  **Open the file:** Simply open the `index.html` file in any modern web browser (e.g., Chrome, Firefox).
+3.  **Open the file:** Simply open the `index.html` file in any modern web browser (e.g., Chrome, Firefox) **OR** Visit the **test** [**website**](https://slizr.github.io/PB3D/) to see the work
 
 > **Note:** If you encounter issues (like cross-origin security errors on certain browsers), you may need to run a simple local web server (e.g., using VS Code Live Server or `python3 -m http.server`).
 
