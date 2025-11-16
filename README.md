@@ -83,7 +83,9 @@ The main control panel is located in the bottom-left corner of the screen:
 
 ## 📄 License
 
-This project is licensed under the **Apache License 2.0**. See the `LICENSE` file for more details.
+This project is licensed under the **Apache License 2.0**. See the [`LICENSE`](LICENSE) file for more details.
+-
+**All rights reserved** by the **registered** company **SLIZ®**. In case of violation of the license rights: [**Apache License 2.0**](LICENSE) You will be responsible for your own actions. If you copy and distribute without the original creator's mark: ```<meta name="author" content="Sliz®">``` And without the mark that you edited: ```// Edited by ...``` You will be responsible for your own actions. And before copying, please read the [`LICENSE`](LICENSE) completely. Thank you for reading the information! Copying index.html is strictly prohibited. There is an exact copy ([**Open Source Code.txt**](OSC.txt)), but without the footer, etc.
 
 ---
 
@@ -92,6 +94,8 @@ This project is licensed under the **Apache License 2.0**. See the `LICENSE` fil
 **Creator:** Sliz®
 
 * **Web-page:** [PB3D](https://slizr.github.io/PB3D/)
+* **Sliz®:** [Github Page Sliz®](https://github.com/SlizR)
+* **Open Source Code:** [OSC.txt](OSC.txt)
 * **Email:** markd.voznyuk@gmail.com
 
 *© 2025 Sliz®. All Rights Reserved. Version 25.0*
