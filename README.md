@@ -7,6 +7,7 @@
   <p align="center">
   <img src="https://img.shields.io/badge/Created by-Sliz®-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/License-Apache License 2.0-lightgrey?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Last Version-25.0-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Project%20Beyond%20-3 Dimensional-purple?style=for-the-badge" />
 </p>
   
