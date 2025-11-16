@@ -1,0 +1,5 @@
+Version 1.start (Starting base)
+
+Building the foundation of a starter project
+
+Added: A self-rotating cube

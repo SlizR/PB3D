@@ -1,0 +1,3 @@
+Version: 24.0
+
+Added: Tesseract (4D hypercube), fixed a bug with displaying the menu with buttons for selecting a figure and auto-rotation, fixed minor bugs in the figure display code

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PB3D</title>
+    <link rel="icon" type="image/png" href="Assets/icon.png">
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="keywords" content="PB3D, 3D, 4D, graphic, sliz, code, PB, project">
+<meta name="author" content="Sliz®">
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="PB3D - Project Beyond 3-Dimensional">
+<meta property="og:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slizr.github.io/PB3D/">
+<meta property="og:image" content="Assets/favicon.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PB3D - Project Beyond 3-Dimensional">
+<meta name="twitter:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="twitter:image" content="Assets/favicon.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="Assets/favicon.png">
+<link rel="apple-touch-startup-image" href="Assets/favicon.png">
+
+<meta name="msapplication-TileColor" content="#1a1a1a">
+<meta name="msapplication-TileImage" content="Assets/favicon.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="Assets/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="Assets/favicon.png">
+
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        canvas { display: block; }
+        
+        #fps-counter { 
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: lime; 
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 16px;
+            z-index: 10;
+            display: none; 
+        }
+
+        #menu {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            z-index: 10;
+        }
+        .shape-button {
+            color: white;
+            background: #007bff;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .shape-button:hover {
+            background: #0056b3;
+        }
+        .shape-button.active {
+            background: #28a745;
+        }
+
+        #warning-modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modal-content {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.7);
+            text-align: center;
+            max-width: 400px;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #modal-content h3 {
+            color: #ff4d4d;
+            margin-top: 0;
+        }
+
+        #modal-content p {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        #confirm-stress-test {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        #confirm-stress-test:hover {
+            background-color: #e60000;
+        }
+
+        #cancel-stress-test {
+            background-color: #555;
+            color: white;
+        }
+
+        #cancel-stress-test:hover {
+            background-color: #333;
+        }
+
+        #controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 0;
+            color: white;
+            font-size: 14px;
+            gap: 15px; 
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+            margin-left: 10px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(19px);
+        }
+
+        .slider.round {
+            border-radius: 25px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        #main-footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            border-top-left-radius: 8px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
+
+        #main-footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin: 0 5px;
+            transition: color 0.3s;
+        }
+
+        #main-footer a:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        #footer-links {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="fps-counter">FPS: 0</div> 
+    
+    <div id="menu">
+        <button class="shape-button active" data-shape="cube">◼︎ Cube</button>
+        <button class="shape-button" data-shape="sphere">⏺︎ Ball</button>
+        <button class="shape-button" data-shape="tetrahedron">▲ Triangle</button>
+        <button class="shape-button" data-shape="tesseract">♾︎ Hypercube (4D)</button>
+        <button class="shape-button" data-shape="stress-mesh">✹ Stress Test</button> 
+
+        <hr style="margin: 10px 0; border-color: rgba(255, 255, 255, 0.3);">
+    
+    <div id="controls">
+        <div class="control-group"> 
+            <label class="switch-label" for="rotation-toggle">
+                Auto-Rotation
+            </label>
+            <label class="switch">
+                <input type="checkbox" id="rotation-toggle" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+
+        <div class="control-group"> 
+            <label class="switch-label" for="fps-toggle">
+                Show FPS
+            </label>
+            <label class="switch">
+                <input type="checkbox" id="fps-toggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+    <div id="warning-modal">
+        <div id="modal-content">
+            <h3>⚠️ WARNING: Extreme Stress Test</h3>
+            <p>You are about to load **2,000,000 (2 Million)** instances of objects. This is an **EXTREME** test designed to maximize load on your system. Expect very low frame rates and potential temporary browser freezing.</p>
+            <p><strong>FPS counter will be automatically activated. In addition, a pulsating "Guilty Sphere" will appear at the center of the stress test.</strong></p>
+            <button class="modal-button" id="confirm-stress-test">Proceed (I understand the risks)</button>
+            <button class="modal-button" id="cancel-stress-test">Cancel</button>
+        </div>
+    </div>
+
+    <footer id="main-footer">
+    © 2025 Sliz®. All Rights Reserved. Version 25.0
+    
+        <div id="footer-links">
+        | <a href="https://github.com/SlizR/PB3D" target="_blank">GitHub</a>
+        | <a href="https://github.com/SlizR/PB3D/blob/main/LICENSE" target="_blank">License</a>
+    </div>
+</footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls, currentShape, light;
+        let isRotating = true;
+        let isFPSVisible = false; 
+        let fpsCounterElement; 
+        
+        let initialFPSState = false; 
+        
+        let tesseractData = {
+            rotationTime: 0,
+            vertices4D: [],
+            edges: [],
+            size: 2,
+            projectionScale: 1.5
+        };
+        const ambientLightIntensity = 1; 
+
+        let guiltySphere = null;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000); 
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 5, 5).normalize();
+            scene.add(light);
+            
+            scene.add(new THREE.AmbientLight(0x404040, ambientLightIntensity));
+
+            camera.position.z = 5;
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 15;
+            
+            fpsCounterElement = document.getElementById('fps-counter');
+
+            initTesseract();
+
+            changeShape('cube');
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function createStressMesh() {
+            const group = new THREE.Group(); 
+
+            const numCubes = 2000000; 
+            const cubeSize = 0.05; 
+            const radius = 3.5; 
+
+            const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+            const material = new THREE.MeshBasicMaterial({ vertexColors: true });
+            
+            const instancedMesh = new THREE.InstancedMesh(geometry, material, numCubes);
+            
+            const matrix = new THREE.Matrix4();
+            const color = new THREE.Color();
+
+            for (let i = 0; i < numCubes; i++) {
+                const u = Math.random();
+                const v = Math.random();
+                
+                const theta = u * 2 * Math.PI; 
+                const phi = Math.acos(2 * v - 1); 
+
+                const r = radius * Math.cbrt(Math.random()); 
+
+                const x = r * Math.sin(phi) * Math.cos(theta);
+                const y = r * Math.sin(phi) * Math.sin(theta);
+                const z = r * Math.cos(phi);
+
+                matrix.setPosition(x, y, z);
+                matrix.makeRotationX(Math.random() * Math.PI);
+                matrix.makeRotationY(Math.random() * Math.PI);
+
+                instancedMesh.setMatrixAt(i, matrix);
+                
+                color.setHex(Math.random() * 0xffffff);
+                instancedMesh.setColorAt(i, color);
+            }
+
+            instancedMesh.instanceMatrix.needsUpdate = true;
+            instancedMesh.instanceColor.needsUpdate = true;
+            group.add(instancedMesh);
+
+
+            const sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+            const sphereMaterial = new THREE.MeshPhongMaterial({
+                color: 0xff00ff,
+                emissive: 0xff00ff, 
+                emissiveIntensity: 0.8,
+                transparent: true,
+                opacity: 0.7, 
+                shininess: 100
+            });
+            guiltySphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            guiltySphere.position.set(0, 0, 0); 
+            group.add(guiltySphere);
+            group.userData.guiltySphere = guiltySphere; 
+
+            return group;
+        }
+
+        function createShape(type) {
+            let geometry;
+            const material = new THREE.MeshPhongMaterial({ color: 0x0077ff, shininess: 80 }); 
+
+            switch (type) {
+                case 'cube':
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    return new THREE.Mesh(geometry, material);
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                    return new THREE.Mesh(geometry, material);
+                case 'tetrahedron':
+                    geometry = new THREE.TetrahedronGeometry(2);
+                    return new THREE.Mesh(geometry, material);
+                case 'tesseract':
+                    return createTesseract();
+                case 'stress-mesh': 
+                    return createStressMesh();
+                default:
+                    return null;
+            }
+        }
+
+        function initTesseract() {
+            const s = tesseractData.size / 2;
+            tesseractData.vertices4D = [];
+            for (let i = 0; i < 16; i++) {
+                tesseractData.vertices4D.push([
+                    (i & 1) ? s : -s,
+                    (i & 2) ? s : -s,
+                    (i & 4) ? s : -s,
+                    (i & 8) ? s : -s
+                ]);
+            }
+
+            tesseractData.edges = [];
+            for (let i = 0; i < 16; i++) {
+                for (let j = i + 1; j < 16; j++) {
+                    let diffCount = 0;
+                    for (let k = 0; k < 4; k++) {
+                        if (tesseractData.vertices4D[i][k] !== tesseractData.vertices4D[j][k]) {
+                            diffCount++;
+                        }
+                    }
+                    if (diffCount === 1) {
+                        tesseractData.edges.push([i, j]);
+                    }
+                }
+            }
+        }
+
+        function rotate4D(v, angle) {
+            const rotXW = [
+                [Math.cos(angle), 0, 0, -Math.sin(angle)],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [Math.sin(angle), 0, 0, Math.cos(angle)]
+            ];
+            const rotZW = [
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, Math.cos(angle), -Math.sin(angle)],
+                [0, 0, Math.sin(angle), Math.cos(angle)]
+            ];
+
+            let v_prime = [0, 0, 0, 0];
+            let temp_v = [...v];
+
+            v_prime[0] = rotXW[0][0] * temp_v[0] + rotXW[0][3] * temp_v[3];
+            v_prime[1] = temp_v[1];
+            v_prime[2] = temp_v[2];
+            v_prime[3] = rotXW[3][0] * temp_v[0] + rotXW[3][3] * temp_v[3];
+            temp_v = [...v_prime];
+
+            v_prime[0] = temp_v[0];
+            v_prime[1] = temp_v[1];
+            v_prime[2] = rotZW[2][2] * temp_v[2] + rotZW[2][3] * temp_v[3];
+            v_prime[3] = rotZW[3][2] * temp_v[2] + rotZW[3][3] * temp_v[3];
+
+            return v_prime;
+        }
+
+        function project4DTo3D(v4) {
+            const d = 2;
+            const w = v4[3];
+            const scale = d / (d - w);
+
+            return new THREE.Vector3(
+                v4[0] * scale * tesseractData.projectionScale,
+                v4[1] * scale * tesseractData.projectionScale,
+                v4[2] * scale * tesseractData.projectionScale
+            );
+        }
+
+        function createTesseract() {
+            const group = new THREE.Group();
+            
+            const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(tesseractData.edges.length * 2 * 3); 
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const line = new THREE.LineSegments(geometry, material);
+            group.add(line);
+
+            group.userData.lineMesh = line;
+            group.userData.isTesseract = true;
+
+            return group;
+        }
+
+        function updateTesseract(deltaTime) {
+            const speed = 0.5; 
+            tesseractData.rotationTime += speed * deltaTime;
+            const angle = tesseractData.rotationTime;
+
+            const lineMesh = currentShape.userData.lineMesh;
+            const positions = lineMesh.geometry.attributes.position.array;
+            let positionsIndex = 0;
+
+            tesseractData.edges.forEach(edge => {
+                const startVertex4D = tesseractData.vertices4D[edge[0]];
+                const endVertex4D = tesseractData.vertices4D[edge[1]];
+
+                const rotatedStart = rotate4D(startVertex4D, angle);
+                const rotatedEnd = rotate4D(endVertex4D, angle);
+
+                const start3D = project4DTo3D(rotatedStart);
+                const end3D = project4DTo3D(rotatedEnd);
+                
+                positions[positionsIndex++] = start3D.x;
+                positions[positionsIndex++] = start3D.y;
+                positions[positionsIndex++] = start3D.z;
+
+                positions[positionsIndex++] = end3D.x;
+                positions[positionsIndex++] = end3D.y;
+                positions[positionsIndex++] = end3D.z;
+            });
+
+            lineMesh.geometry.attributes.position.needsUpdate = true;
+        }
+
+        const fpsToggle = document.getElementById('fps-toggle');
+        const fpsCounter = document.getElementById('fps-counter');
+
+        function setFPSState(state) {
+            isFPSVisible = state;
+            fpsToggle.checked = state;
+            fpsCounter.style.display = state ? 'block' : 'none';
+        }
+
+
+        function changeShape(type) {
+            if (currentShape) {
+                if (currentShape.userData.shapeType === 'stress-mesh') {
+                    setFPSState(initialFPSState);
+                    guiltySphere = null; 
+                }
+                scene.remove(currentShape);
+                if (currentShape.geometry) currentShape.geometry.dispose(); 
+                if (currentShape.material) currentShape.material.dispose();
+            }
+
+            if (type === 'stress-mesh') {
+                initialFPSState = isFPSVisible;
+                setFPSState(true);
+            }
+
+            currentShape = createShape(type);
+            if (currentShape) {
+                currentShape.userData.shapeType = type; 
+                scene.add(currentShape);
+            }
+
+            if (type === 'tesseract') {
+                camera.position.set(0, 0, 8);  
+                controls.target.set(0, 0, 0); 
+            } else if (type === 'stress-mesh') {
+                camera.position.set(0, 0, 7);
+                controls.target.set(0, 0, 0);
+                controls.minDistance = 3;
+                controls.maxDistance = 10;
+            } else {
+                camera.position.set(0, 0, 5);
+                controls.target.set(0, 0, 0); 
+                controls.minDistance = 2;
+                controls.maxDistance = 15;
+            }
+            camera.updateProjectionMatrix();
+            controls.update();
+
+            document.querySelectorAll('.shape-button').forEach(button => {
+                button.classList.remove('active');
+                if (button.dataset.shape === type) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        let lastTime = 0;
+        let frameCount = 0;
+        let lastFPSUpdateTime = performance.now(); 
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            const deltaTime = (time - lastTime) / 1000;
+            lastTime = time;
+
+            frameCount++;
+            if (time > lastFPSUpdateTime + 1000) { 
+                const currentFPS = Math.round(frameCount / ((time - lastFPSUpdateTime) / 1000));
+                if (isFPSVisible) {
+                    fpsCounterElement.textContent = `FPS: ${currentFPS}`;
+                }
+                frameCount = 0;
+                lastFPSUpdateTime = time;
+            }
+
+
+            controls.update();
+
+            if (isRotating && currentShape) {  
+                if (currentShape.userData.isTesseract) {
+                    updateTesseract(deltaTime);
+                    currentShape.rotation.x += 0.005;  
+                    currentShape.rotation.y += 0.005;
+                } else if (currentShape.userData.shapeType === 'stress-mesh') {
+                    currentShape.rotation.x += 0.003; 
+                    currentShape.rotation.y += 0.005;
+                    currentShape.rotation.z += 0.003;
+
+                    if (currentShape.userData.guiltySphere) {
+                        const sphere = currentShape.userData.guiltySphere;
+                        const hue = (Math.sin(time * 0.001) + 1) / 2;
+                        const color = new THREE.Color().setHSL(hue, 1, 0.5);
+                        sphere.material.color.copy(color);
+                        sphere.material.emissive.copy(color);
+
+                        sphere.rotation.y += 0.01;
+                        sphere.rotation.x += 0.005;
+                    }
+                } else {
+                    currentShape.rotation.x += 0.005;
+                    currentShape.rotation.y += 0.005;
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const menu = document.getElementById('menu');
+            const modal = document.getElementById('warning-modal');
+            const confirmBtn = document.getElementById('confirm-stress-test');
+            const cancelBtn = document.getElementById('cancel-stress-test');
+
+            menu.addEventListener('click', (event) => {
+                const shapeType = event.target.dataset.shape;
+
+                if (shapeType === 'stress-mesh') {
+                    modal.style.display = 'flex';
+                } else if (shapeType) {
+                    changeShape(shapeType);
+                }
+            });
+
+            confirmBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                changeShape('stress-mesh');
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            
+            const rotationToggle = document.getElementById('rotation-toggle');
+            rotationToggle.addEventListener('change', (event) => {
+                isRotating = event.target.checked;
+            });
+            
+            fpsToggle.addEventListener('change', (event) => {
+                setFPSState(event.target.checked);
+            });
+
+            init();
+            animate(0);
+        });
+
+    </script>
+</body>
+</html>

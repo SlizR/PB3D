@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PB3D</title>
+    <link rel="icon" type="image/png" href="Assets/icon.png">
+  
+<meta name="description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="keywords" content="PB3D, 3D, 4D, graphic, sliz, code, PB, project">
+<meta name="author" content="Sliz®">
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="PB3D - Project Beyond 3-Dimensional">
+<meta property="og:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://slizr.github.io/PB3D/">
+<meta property="og:image" content="Assets/favicon.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PB3D - Project Beyond 3-Dimensional">
+<meta name="twitter:description" content="An open-source online 3D and 4D graphics project for viewing.">
+<meta name="twitter:image" content="Assets/favicon.png">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="Assets/favicon.png">
+<link rel="apple-touch-startup-image" href="Assets/favicon.png">
+
+<meta name="msapplication-TileColor" content="#1a1a1a">
+<meta name="msapplication-TileImage" content="Assets/favicon.png">
+
+<link rel="icon" type="image/png" sizes="32x32" href="Assets/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="Assets/favicon.png">
+
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #f0f0f0; }
+        canvas { display: block; }
+        
+        #menu {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            z-index: 10;
+        }
+        .shape-button {
+            color: white;
+            background: #007bff;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .shape-button:hover {
+            background: #0056b3;
+        }
+        .shape-button.active {
+            background: #28a745;
+        }
+
+        #controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 0;
+            color: white;
+            font-size: 14px;
+            gap: 15px; 
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+            margin-left: 10px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(19px);
+        }
+
+        .slider.round {
+            border-radius: 25px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        #main-footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.7);
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            border-top-left-radius: 8px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+        }
+
+        #main-footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin: 0 5px;
+            transition: color 0.3s;
+        }
+
+        #main-footer a:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        #footer-links {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="menu">
+        <button class="shape-button active" data-shape="cube">◼︎ Cube</button>
+        <button class="shape-button" data-shape="sphere">⏺︎ Ball</button>
+        <button class="shape-button" data-shape="tetrahedron">▲ Triangle</button>
+        
+
+        <hr style="margin: 10px 0; border-color: rgba(255, 255, 255, 0.3);">
+    
+    <div id="controls">
+        <div class="control-group"> 
+            <label class="switch-label" for="rotation-toggle">
+                Auto-Rotation
+            </label>
+            <label class="switch">
+                <input type="checkbox" id="rotation-toggle" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+    <footer id="main-footer">
+    © 2025 Sliz®. All Rights Reserved. Version 23.0
+    
+        <div id="footer-links">
+        | <a href="https://github.com/SlizR/PB3D" target="_blank">GitHub</a>
+        | <a href="https://github.com/SlizR/PB3D/blob/main/LICENSE" target="_blank">License</a>
+    </div>
+</footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls, currentShape, light;
+        let isRotating = true;
+        
+        const ambientLightIntensity = 1; 
+        
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000); 
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(5, 5, 5).normalize();
+            scene.add(light);
+            
+            scene.add(new THREE.AmbientLight(0x404040, ambientLightIntensity));
+
+            camera.position.z = 5;
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 15;
+            
+
+            changeShape('cube');
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function createShape(type) {
+            let geometry;
+            const material = new THREE.MeshPhongMaterial({ color: 0x0077ff, shininess: 80 }); 
+
+            switch (type) {
+                case 'cube':
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    return new THREE.Mesh(geometry, material);
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                    return new THREE.Mesh(geometry, material);
+                case 'tetrahedron':
+                    geometry = new THREE.TetrahedronGeometry(2);
+                    return new THREE.Mesh(geometry, material);
+                default:
+                    return null;
+            }
+        }
+        
+
+        function changeShape(type) {
+            if (currentShape) {
+                scene.remove(currentShape);
+                if (currentShape.geometry) currentShape.geometry.dispose(); 
+                if (currentShape.material) currentShape.material.dispose();
+            }
+
+            currentShape = createShape(type);
+            if (currentShape) {
+                currentShape.userData.shapeType = type; 
+                scene.add(currentShape);
+            }
+
+            camera.position.set(0, 0, 5);
+            controls.target.set(0, 0, 0); 
+            controls.minDistance = 2;
+            controls.maxDistance = 15;
+
+            camera.updateProjectionMatrix();
+            controls.update();
+
+            document.querySelectorAll('.shape-button').forEach(button => {
+                button.classList.remove('active');
+                if (button.dataset.shape === type) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        let lastTime = 0;
+        
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            const deltaTime = (time - lastTime) / 1000;
+            lastTime = time;
+
+            controls.update();
+
+            if (isRotating && currentShape) {  
+                currentShape.rotation.x += 0.005;
+                currentShape.rotation.y += 0.005;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const menu = document.getElementById('menu');
+
+            menu.addEventListener('click', (event) => {
+                const shapeType = event.target.dataset.shape;
+
+                if (shapeType) {
+                    changeShape(shapeType);
+                }
+            });
+            
+            const rotationToggle = document.getElementById('rotation-toggle');
+            rotationToggle.addEventListener('change', (event) => {
+                isRotating = event.target.checked;
+            });
+            
+
+            init();
+            animate(0);
+        });
+
+    </script>
+</body>
+</html>

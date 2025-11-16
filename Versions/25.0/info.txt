@@ -1,0 +1,9 @@
+Version: 25.0 (Latest as of today)
+
+Added:
+
+1) Stress Test Figure (Adds a multicolored sphere made of 2 million multicolored cubes. Before entering, a sign appears asking if you're sure to enter and information. Upon entering, the FPS test automatically starts.)
+
+2) FPS Counter (Measures FPS and displays in the top left corner. When entering the Stress Test, it automatically turns on or returns to the state before entering this mode.)
+
+3) Fixed minor bugs in figure display. Updated license and links.

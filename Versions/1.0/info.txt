@@ -1,0 +1,5 @@
+Version 1.0
+
+Added: OrbitControls (user rotation and zoom).
+
+Removed: Automatic cube rotation.
