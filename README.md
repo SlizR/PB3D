@@ -70,8 +70,10 @@ The main control panel is located in the bottom-left corner of the screen:
     * **⏺︎ Ball** (Sphere)
     * **▲ Triangle** (Tetrahedron)
     * **♾︎ Hypercube (4D)** (Tesseract)
+    * **✹ Stress Test** (2 million objects)
 2.  **Rotation Control:**
     * **Auto-Rotation:** Toggle switch to enable or disable automatic rotation around the X and Y axes.
+    * **FPS display:** You can turn the FPS display on or off; it's off by default. When you enter a stress test, it automatically turns on, but when you exit, it returns the value before entering.
 3.  **Camera Control (OrbitControls):**
     * **Rotate View:** Click and drag the left mouse button.
     * **Zoom/Pinch:** Use the mouse scroll wheel.
@@ -92,4 +94,4 @@ This project is licensed under the **Apache License 2.0**. See the `LICENSE` fil
 * **Web-page:** [PB3D](https://slizr.github.io/PB3D/)
 * **Email:** markd.voznyuk@gmail.com
 
-*© 2025 Sliz®. All Rights Reserved. Version 24.0*
+*© 2025 Sliz®. All Rights Reserved. Version 25.0*
