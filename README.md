@@ -28,6 +28,15 @@ Users can switch between various standard 3D shapes (Cube, Sphere, Tetrahedron) 
 
 ---
 
+## ♾︎ Every version is here
+
+You can view each publicly available version of the project and select any for yourself and your project to understand how it works and simply look at the project history, what was added, what was removed, etc.
+
+To see the history of each version, go to the Versions section of the repository, select the version, go to info.txt, and read the changes, or take the indeh.html code for that version and look at it.
+* **Versions Dir: [Directory](Versions)**
+
+---
+
 ## 🌌 Open Source Code
 
 * The **open source code** is provided in a file [**here**](OSC.txt), and **you can copy** it **without the footer** and **author's badge**, **but with one author's comment**.
@@ -96,6 +105,7 @@ This project is licensed under the **Apache License 2.0**. See the [`LICENSE`](L
 
 * **Web-page:** [PB3D](https://slizr.github.io/PB3D/)
 * **Sliz®:** [Github Page Sliz®](https://github.com/SlizR)
+* **Versions:** [Directory](Versions)
 * **Open Source Code:** [OSC.txt](OSC.txt)
 * **Email:** markd.voznyuk@gmail.com
 
