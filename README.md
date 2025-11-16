@@ -70,6 +70,16 @@ The project was not created specifically, but by chance when experimenting with 
 
 ---
 
+## ⌨ Communication
+
+The project also has a **Discussion** and **Issues section**, where you can **report bugs**, **security issues**, **suggest ideas**, or **fix something**. The **Discussion section** is also a **great place** to **chat**. **Our administrators** are **here for you too**.
+
+**Discussion**: [**General Chat**](https://github.com/SlizR/PB3D/discussions/1)
+
+**Issues**: [**here**](https://github.com/SlizR/PB3D/issues)
+
+---
+
 ## 🚀 Setup and Launch
 
 The PB3D project is simple to set up. Since it primarily uses local files (HTML, CSS, JS) and public CDN links for Three.js, you can run it directly in your browser.
@@ -108,11 +118,13 @@ The main control panel is located in the bottom-left corner of the screen:
 
 ---
 
-## 📄 License
+## 📄 License & Info
 
 This project is licensed under the **Apache License 2.0**. See the [`LICENSE`](LICENSE) file for more details.
 -
 **All rights reserved** by the **registered** company **SLIZ®**. In case of violation of the license rights: [**Apache License 2.0**](LICENSE) You will be responsible for your own actions. If you copy and distribute without the original creator's mark: ```<meta name="author" content="Sliz®">``` And without the mark that you edited: ```// Edited by ...``` You will be responsible for your own actions. And before copying, please read the [`LICENSE`](LICENSE) completely. Thank you for reading the information! Copying index.html is strictly prohibited. There is an exact copy ([**Open Source Code.txt**](OSC.txt)), but without the footer, etc.
+
+**All Rights info** in this [**file**](RIGHTS.md)
 
 ---
 
